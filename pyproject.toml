@@ -1,0 +1,20 @@
+[project]
+name = "hydra-dns"
+version = "0.1.0"
+description = "A DoH resolver that fans queries across several AdGuard DNS accounts, with one dashboard over all of them."
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/conftest.py" = ["E402"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["src"]
+testpaths = ["tests"]

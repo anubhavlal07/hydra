@@ -1,0 +1,8 @@
+-r requirements.txt
+pytest>=8.3
+pytest-asyncio>=0.24
+respx>=0.22
+ruff>=0.8
+# Test-only: generates the self-signed wildcard certificate the DoT tests hand to a real
+# TLS handshake. Not a runtime dependency -- production gets its certificate from Let's Encrypt.
+cryptography>=44.0

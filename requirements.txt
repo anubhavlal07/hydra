@@ -1,0 +1,12 @@
+# Runtime dependencies, pinned loosely.
+#
+# Deliberately short. The process is the resolver, so every import is time it spends not
+# answering, and a restart is a DNS outage on every device pointed at it. Nothing goes in this
+# file that is not on the request path or needed to render the dashboard.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.32,<1.0
+httpx[http2]>=0.28,<1.0
+dnspython>=2.7,<3.0
+aioquic>=1.2,<2.0
+itsdangerous>=2.2,<3.0
+tzdata>=2024.1
