@@ -1,0 +1,10 @@
+# Line endings.
+#
+# The deploy scripts are checked out on a Linux VM and executed there. A CRLF line ending on
+# the shebang makes the kernel look for an interpreter called "/usr/bin/env bash\r", which
+# fails with the famously unhelpful "bad interpreter: No such file or directory". Forcing LF
+# on everything the VM runs removes a whole afternoon of confusion.
+*.sh            text eol=lf
+*.service       text eol=lf
+*.sql           text eol=lf
+*.py            text eol=lf
