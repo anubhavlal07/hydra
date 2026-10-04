@@ -3,6 +3,8 @@
 **Pool several free AdGuard DNS accounts behind one private resolver, and manage every device
 and filtering rule from one dashboard.**
 
+![Hydra DNS dashboard: pooled quota, adding a device with a QR code, the live query log, and one policy across every account](docs/demo.gif)
+
 A free AdGuard DNS account gives you a monthly query allowance and a few device slots. One
 account runs out; several would be plenty, but nothing spreads traffic across them. Each
 account's dashboard only shows its own slice. Each device belongs to exactly one account. And
