@@ -190,6 +190,36 @@ async def test_the_fallback_failing_falls_through_to_a_primary():
     assert upstream.label == "one"
 
 
+@respx.mock
+async def test_a_benched_fallback_is_skipped_for_unfiltered_queries():
+    fallback = respx.post(FALLBACK).mock(return_value=httpx.Response(500))
+    mock(PRIMARY)
+    pool = make_pool()
+    for _ in range(3):
+        pool.fallback.record_failure("ConnectTimeout")
+
+    async with httpx.AsyncClient() as client:
+        pool.attach_client(client)
+        _, upstream, _ = await pool.forward_unfiltered(b"\x00")
+
+    assert upstream.label == "one"
+    assert fallback.call_count == 0
+
+
+@respx.mock
+async def test_unfiltered_queries_survive_a_long_dead_fallback():
+    mock(FALLBACK, status=500)
+    mock(PRIMARY)
+    pool = make_pool()
+    pool.fallback.consecutive_failures = 5000
+
+    async with httpx.AsyncClient() as client:
+        pool.attach_client(client)
+        _, upstream, _ = await pool.forward_unfiltered(b"\x00")
+
+    assert upstream.label == "one"
+
+
 def test_a_benched_upstream_is_retried_within_two_minutes():
     from hydra_dns.resolver.upstream import MAX_COOLDOWN_S
 

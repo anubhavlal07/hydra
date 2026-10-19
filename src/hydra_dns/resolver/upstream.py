@@ -11,6 +11,7 @@ log = logging.getLogger(__name__)
 FAILURE_THRESHOLD = 3
 BASE_COOLDOWN_S = 20.0
 MAX_COOLDOWN_S = 120.0
+MAX_DOUBLINGS = 8
 QUOTA_EXHAUSTED_AT = 0.995
 FALLBACK_LABEL = "fallback"
 
@@ -90,7 +91,7 @@ class Upstream:
         self.last_error = reason[:200]
         self.last_used_at = time.time()
         if self.consecutive_failures >= FAILURE_THRESHOLD:
-            over = self.consecutive_failures - FAILURE_THRESHOLD
+            over = min(self.consecutive_failures - FAILURE_THRESHOLD, MAX_DOUBLINGS)
             self.cooldown_until = time.monotonic() + min(
                 BASE_COOLDOWN_S * (2**over), MAX_COOLDOWN_S
             )
@@ -327,7 +328,11 @@ class UpstreamPool:
         return await self._first_answer(candidates, wire)
 
     async def forward_unfiltered(self, wire: bytes) -> tuple[bytes, Upstream, float]:
-        if self._client is None or self._fallback is None:
+        if (
+            self._client is None
+            or self._fallback is None
+            or self._fallback.benched(time.monotonic())
+        ):
             return await self.forward(wire)
         try:
             return await self._first_answer([self._fallback], wire)

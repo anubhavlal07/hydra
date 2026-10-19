@@ -81,9 +81,9 @@ class DoqProtocol(QuicConnectionProtocol):
     def _watch_hello(self, context) -> None:
         handle = context._server_handle_hello
 
-        def wrapped(input_buf, initial_buf, handshake_buf, onertt_buf):
+        def wrapped(input_buf, *args, **kwargs):
             self.server_name = peek_server_name(input_buf)
-            return handle(input_buf, initial_buf, handshake_buf, onertt_buf)
+            return handle(input_buf, *args, **kwargs)
 
         context._server_handle_hello = wrapped
 

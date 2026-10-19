@@ -102,6 +102,14 @@ def test_cooldown_backs_off_exponentially() -> None:
     assert second - first >= BASE_COOLDOWN_S
 
 
+def test_a_long_failure_streak_never_overflows_the_cooldown() -> None:
+    upstream = Upstream(label="a", doh_url="https://a.test")
+    for _ in range(5000):
+        upstream.record_failure("timeout")
+    assert upstream.consecutive_failures == 5000
+    assert upstream.cooldown_until > 0
+
+
 def test_success_clears_the_breaker() -> None:
     upstream = Upstream(label="a", doh_url="https://a.test")
     for _ in range(FAILURE_THRESHOLD):

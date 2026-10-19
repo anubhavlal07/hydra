@@ -405,6 +405,7 @@ Supabase, apply any new `supabase/NNN_*.sql` files before restarting.
 | Sign-in succeeds, then shows signed out | `HYDRA_COOKIE_DOMAIN` isn't a parent of both the dashboard and API hosts. |
 | An account shows "cannot sign in" | Wrong password, or 2FA is on for that AdGuard account. |
 | `/api/health` says `degraded` | No account can answer, either because all of them are spent or because AdGuard is unreachable. Devices still resolve through the fallback, **unfiltered**. Check Accounts. |
+| A paused device is still filtered | The fallback resolver is unreachable from your server, so paused queries go through the pool. Some hosts can't reach Quad9; set `HYDRA_FALLBACK_DOH=https://cloudflare-dns.com/dns-query`. |
 | A site is blocked on some lookups but not others | Accounts disagree on policy. Press **Sync accounts** on Rules. |
 | Small queries work, large ones hang | ICMP "fragmentation needed" (type 3 code 4) is blocked. Allow it in the cloud firewall. |
 
